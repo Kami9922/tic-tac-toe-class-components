@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import FieldLayout from "./FieldLayout";
+import React, { Component } from "react"
+import FieldLayout from "./FieldLayout"
 
 class Field extends Component {
 	render() {
-		return <FieldLayout />;
+		return <FieldLayout />
 	}
 }
 
-export default Field;
+export default Field
