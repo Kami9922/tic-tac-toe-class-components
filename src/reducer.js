@@ -3,6 +3,7 @@ export const initialState = {
 	field: ["", "", "", "", "", "", "", "", ""],
 	isDraw: false,
 	isGameEnded: false,
+	stateOfGameValue: `Ходит X`,
 };
 
 export const appReducer = (state = initialState, { type, payload }) => {

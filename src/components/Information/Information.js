@@ -1,8 +1,10 @@
-import React from "react";
+import React, { Component } from "react";
 import InformationLayout from "./InformationLayout";
 
-const Information = () => {
-	return <InformationLayout />;
-};
+class Information extends Component {
+	render() {
+		return <InformationLayout />;
+	}
+}
 
 export default Information;

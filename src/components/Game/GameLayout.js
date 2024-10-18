@@ -1,30 +1,35 @@
-import React from "react";
+import React, { Component } from "react";
 import Information from "../Information/Information";
 import Field from "../Field/Field";
 import styles from "./../../css/game.module.css";
-import { store } from "../../store";
+import { connect } from "react-redux";
 
-const GameLayout = () => {
-	return (
-		<div>
-			<Information />
-			<Field />
-			<div
-				className={styles["reset-button"]}
-				onClick={() => {
-					store.dispatch({ type: "SET_CURRENT_PLAYER", payload: "X" });
-					store.dispatch({
-						type: "SET_FIELD",
-						payload: ["", "", "", "", "", "", "", "", ""],
-					});
-					store.dispatch({ type: "SET_IS_DRAW", payload: false });
-					store.dispatch({ type: "SET_IS_GAME_ENDED", payload: false });
-				}}
-			>
-				Начать заново
+class GameLayoutContainer extends Component {
+	render() {
+		const { dispatch } = this.props;
+		return (
+			<div>
+				<Information />
+				<Field />
+				<div
+					className={styles["reset-button"]}
+					onClick={() => {
+						dispatch({ type: "SET_CURRENT_PLAYER", payload: "X" });
+						dispatch({
+							type: "SET_FIELD",
+							payload: ["", "", "", "", "", "", "", "", ""],
+						});
+						dispatch({ type: "SET_IS_DRAW", payload: false });
+						dispatch({ type: "SET_IS_GAME_ENDED", payload: false });
+					}}
+				>
+					Начать заново
+				</div>
 			</div>
-		</div>
-	);
-};
+		);
+	}
+}
+
+const GameLayout = connect()(GameLayoutContainer);
 
 export default GameLayout;

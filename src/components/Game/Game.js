@@ -1,55 +1,47 @@
-import { useEffect } from "react";
+import { Component, useEffect } from "react";
 import GameLayout from "./GameLayout";
-import { getRandomNumber } from "../../utils/randomNumber";
-import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentPlayer } from "../../selectors/select-currentPlayer";
-import { selectIsGameEnded } from "../../selectors/select-isGameEnded";
-import { selectIsDraw } from "../../selectors/select-isDraw";
+import { connect } from "react-redux";
 
-const Game = () => {
-	const currentPlayer = useSelector(selectCurrentPlayer);
-	const isGameEnded = useSelector(selectIsGameEnded);
-	const isDraw = useSelector(selectIsDraw);
+class GameContainer extends Component {
+	componentDidUpdate(prevProps) {
+		const { currentPlayer, isGameEnded, isDraw } = this.props;
 
-	const dispatch = useDispatch();
+		// Проверяем, изменились ли нужные значения
+		if (
+			prevProps.isDraw !== isDraw ||
+			prevProps.isGameEnded !== isGameEnded ||
+			prevProps.currentPlayer !== currentPlayer
+		) {
+			this.changingGameValue();
+		}
+	}
 
-	//Установка первого игрока
-	useEffect(() => {
-		const randomNumber = getRandomNumber();
-		dispatch({
-			type: "SET_CURRENT_PLAYER",
-			payload: randomNumber === 1 ? "X" : "O",
-		});
-	}, [dispatch]);
+	changingGameValue = () => {
+		const { currentPlayer, isGameEnded, isDraw, dispatch } = this.props;
+		let stateOfGameValue;
 
-	// Установка текстового статуса игры
-	useEffect(() => {
-		const changingGameValue = () => {
-			let stateOfGameValue;
+		if (isDraw) {
+			stateOfGameValue = `Ничья`;
+			dispatch({ type: "SET_STATE_GAME_VALUE", payload: stateOfGameValue });
+		} else if (isGameEnded) {
+			stateOfGameValue = `Победа ${currentPlayer}`;
+			dispatch({ type: "SET_STATE_GAME_VALUE", payload: stateOfGameValue });
+		} else {
+			stateOfGameValue = `Ходит ${currentPlayer}`;
+			dispatch({ type: "SET_STATE_GAME_VALUE", payload: stateOfGameValue });
+		}
+	};
 
-			if (isDraw) {
-				stateOfGameValue = `Ничья`;
-				dispatch({ type: "SET_STATE_GAME_VALUE", payload: stateOfGameValue });
-			}
-			if (!isDraw && isGameEnded) {
-				stateOfGameValue = `Победа ${currentPlayer}`;
-				dispatch({
-					type: "SET_STATE_GAME_VALUE",
-					payload: stateOfGameValue,
-				});
-			}
-			if (!isDraw && !isGameEnded) {
-				stateOfGameValue = `Ходит ${currentPlayer}`;
-				dispatch({
-					type: "SET_STATE_GAME_VALUE",
-					payload: stateOfGameValue,
-				});
-			}
-		};
-		changingGameValue();
-	}, [isDraw, isGameEnded, currentPlayer, dispatch]);
+	render() {
+		return <GameLayout />;
+	}
+}
+const mapStateToProps = (state) => ({
+	isGameEnded: state.isGameEnded,
+	isDraw: state.isDraw,
+	currentPlayer: state.currentPlayer,
+});
 
-	return <GameLayout />;
-};
+const Game = connect(mapStateToProps)(GameContainer);
 
 export default Game;
